@@ -16,5 +16,5 @@ public:
 
     virtual ~Sprite() = default;
     virtual void draw(sf::RenderWindow& window) const = 0;
-    virtual void update() = 0;
+    virtual void update(bool movingLeft, bool movingRight) = 0;
 };

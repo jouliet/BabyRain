@@ -18,6 +18,6 @@ void StaticSprite::draw(sf::RenderWindow& window) const {
     window.draw(rec);
 }
 
-void StaticSprite::update() {
+void StaticSprite::update(bool movingLeft, bool movingRight) {
     //static donc rien
 }
