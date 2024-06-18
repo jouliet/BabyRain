@@ -63,7 +63,7 @@ add_subdirectory(unitTests)
 #
 FetchContent_Declare(
 	box2d
-	GIT_REPOSITORY https://github.com/erincatto/box2c.git
+	GIT_REPOSITORY https://github.com/erincatto/box2d.git
 	GIT_TAG main
 	GIT_SHALLOW TRUE
 	GIT_PROGRESS TRUE

@@ -2,7 +2,15 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
-Game::Game() = default;
+Game::Game() : world{(b2Vec2){0.0f, -10.0f}} {
+    sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -5.0f));
+    sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 5.0f));
+}
+
+Game::~Game()
+{
+    sprites.clear();
+}
 
 void Game::run() {
 	sf::Clock clock;
@@ -16,7 +24,8 @@ void Game::run() {
 			timeSinceLastUpdate -= TimePerFrame;
 
 			processEvents();
-			//update(TimePerFrame);
+            world.Step(TimePerFrame.asSeconds(), velocityIterations, positionIterations);
+			update();
 		}
 
 		render();
@@ -34,7 +43,19 @@ void Game::processEvents() {
 	}
 }
 
+void Game::update() const {
+    for (const auto& sprite : sprites)
+    {
+        sprite->update();
+    }
+    
+}
+
 void Game::render() {
 	window.clear();
+    for (const auto& sprite : sprites)
+    {
+        sprite->draw(window);
+    }
 	window.display();
 }
