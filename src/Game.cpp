@@ -62,6 +62,7 @@ void Game::processEvents() {
 void Game::update() {
 	for (int i = 0; i < sprites.size(); i++) {
         if (sprites[i]->destroy) {
+			world.DestroyBody(sprites[i]->body);
             sprites.erase(sprites.begin() + i);
 			break;
         }
@@ -69,6 +70,10 @@ void Game::update() {
     for (const auto& sprite : sprites)
     {
         sprite->update(movingLeft, movingRight);	
+    }
+	if (babySpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
+        sprites.push_back(std::make_unique<Baby>(&world, 0.5f, 0.5f));
+        babySpawnClock.restart();
     }
 }
 

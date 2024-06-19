@@ -31,6 +31,7 @@ private:
     bool					movingLeft{false};
     
     std::unique_ptr<ContactListener>                    contactListener;
+    sf::Clock babySpawnClock;
 public:
             Game();
             ~Game();
