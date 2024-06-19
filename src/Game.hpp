@@ -5,12 +5,15 @@
 #include "Sprite.hpp"
 #include "StaticSprite.hpp"
 #include "Stroller.hpp"
+#include "Baby.hpp"
+#include "ContactListener.hpp"
+#include "Fixtures.hpp"
 
-class Game
+class Game 
 {
 private:
     void					processEvents();
-	void					update() const;
+	void					update();
 	void					render();
 
     void                    handleInput(sf::Keyboard::Key key, bool isPressed);
@@ -21,14 +24,17 @@ private:
     int32                   velocityIterations = 6;
     int32                   positionIterations = 2;
 
-    b2World                 world;
-    std::vector<std::unique_ptr<Sprite>> sprites;
+    b2World                                 world;
+    std::vector<std::unique_ptr<Sprite>>    sprites;
 
     bool					movingRight{false};
     bool					movingLeft{false};
-
+    
+    std::unique_ptr<ContactListener>                    contactListener;
 public:
             Game();
             ~Game();
     void    run();
+
+    void    addFixtureUserData(std::unique_ptr<MyFixtureUserData> data);
 };

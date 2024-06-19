@@ -3,8 +3,11 @@
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
 Game::Game() : world{(b2Vec2){0.0f, -10.0f}} {
+	contactListener = std::make_unique<ContactListener>();
+	world.SetContactListener(contactListener.get());
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
+	sprites.push_back(std::make_unique<Baby>(&world, 0.5f, 0.5f));
 }
 
 Game::~Game()
@@ -56,12 +59,17 @@ void Game::processEvents() {
 	}
 }
 
-void Game::update() const {
+void Game::update() {
+	for (int i = 0; i < sprites.size(); i++) {
+        if (sprites[i]->destroy) {
+            sprites.erase(sprites.begin() + i);
+			break;
+        }
+    }
     for (const auto& sprite : sprites)
     {
-        sprite->update(movingLeft, movingRight);
+        sprite->update(movingLeft, movingRight);	
     }
-    
 }
 
 void Game::render() {

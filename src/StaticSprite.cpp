@@ -4,6 +4,7 @@
 StaticSprite::StaticSprite(b2World* world, float height, float width, float xPosition, float yPosition) {
     //box2d
     bodyDef.position.Set(xPosition, yPosition);
+    bodyDef.type = b2_staticBody;
     body = world->CreateBody(&bodyDef);
     box.SetAsBox(width, height);
     body->CreateFixture(&box, 0.0f);
@@ -20,4 +21,12 @@ void StaticSprite::draw(sf::RenderWindow& window) const {
 
 void StaticSprite::update(bool movingLeft, bool movingRight) {
     //static donc rien
+}
+
+void StaticSprite::handleCollision(Sprite* sprite) {
+    //TODOS
+}
+
+void StaticSprite::setDestroy() {
+    //ne fait rien
 }

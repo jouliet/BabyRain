@@ -1,15 +1,19 @@
 #pragma once
+#include <SFML/Graphics.hpp>
+#include <Box2D/Box2D.h>
 #include "Sprite.hpp"
+#include <random>
 
-class Stroller : public Sprite
+class Baby : public Sprite
 {
 private:
     b2FixtureDef fixtureDef;
-    b2Vec2      force{30, 0};
     std::vector<std::unique_ptr<MyFixtureUserData>>     mFixtureUserData;
 
 public:
-    explicit    Stroller(b2World* world, float height, float width, float xPosition, float yPosition);
+    Baby(b2World* world, float height, float width);
+
+    float       randomPosition() const;
 
     void        draw(sf::RenderWindow& window) const override;
     void        update(bool movingLeft, bool movingRight) override;

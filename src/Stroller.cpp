@@ -10,12 +10,20 @@ Stroller::Stroller(b2World* world, float height, float width, float xPosition, f
     fixtureDef.shape = &box;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
-    body->CreateFixture(&fixtureDef);
+    
     //sfml
     rec.setSize(sf::Vector2f(2 * width * scale, 2 * height * scale));
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
     rec.setFillColor(sf::Color::Cyan);
+
+    auto myUserData = std::make_unique<MyFixtureUserData>();
+    myUserData->type = 1;
+    myUserData->sprite = this;
+    fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(myUserData.get());
+    body->CreateFixture(&fixtureDef);
+    mFixtureUserData.emplace_back(std::move(myUserData));
+    myUserData = nullptr;
 }
 
 void Stroller::draw(sf::RenderWindow& window) const {
@@ -46,4 +54,12 @@ void Stroller::update(bool movingLeft, bool movingRight) {
     }
     
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));
+}
+
+void Stroller::handleCollision(Sprite* sprite) {
+    sprite->setDestroy();
+}
+
+void Stroller::setDestroy() {
+    destroy = true;
 }
