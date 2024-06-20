@@ -6,10 +6,14 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
 	if (!soundManager.loadSound("resources/sujet_micro-projet_CSC4526_2023_2024.wav")) {
 		std::cout << "Error loading sound file" << std::endl;
 	}
+	if (!backgroundTexture.loadFromFile("resources/bg.jpg")) {
+    std::cerr << "Failed to load background image!" << std::endl;
+	}
+	backgroundSprite.setTexture(backgroundTexture);
 	font.loadFromFile("resources/arial.ttf");
 	timeDisplay.setFont(font);
     timeDisplay.setCharacterSize(25);
-    timeDisplay.setFillColor(sf::Color::White);
+    timeDisplay.setFillColor(sf::Color::Black);
     timeDisplay.setPosition(10.f, 10.f);
 	contactListener = std::make_unique<ContactListener>();
 	world.SetContactListener(contactListener.get());
@@ -113,6 +117,7 @@ void Game::update() {
 
 void Game::render() {
 	window.clear();
+	window.draw(backgroundSprite);
     for (const auto& sprite : sprites)
     {
         sprite->draw(window);

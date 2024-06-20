@@ -41,6 +41,9 @@ private:
     bool                    gameRunning;
 
     SoundManager            soundManager;
+
+    sf::Texture             backgroundTexture;
+    sf::Sprite              backgroundSprite;
 public:
             Game();
             ~Game();
