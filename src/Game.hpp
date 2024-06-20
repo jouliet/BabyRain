@@ -40,7 +40,7 @@ private:
 
     bool                    gameRunning;
 
-    //SoundManager        soundManager;
+    SoundManager            soundManager;
 public:
             Game();
             ~Game();

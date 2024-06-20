@@ -1,17 +1,14 @@
 #include "SoundManager.hpp"
+#include <iostream>
 
-void SoundManager::loadSound(const std::string& name, const std::string& filename) {
-    auto soundBuffer = std::make_unique<sf::SoundBuffer>();
-    if (soundBuffer->loadFromFile(filename)) {
-        sounds[name] = std::move(soundBuffer);
+bool SoundManager::loadSound(const std::string& filename) {
+    if (!buffer.loadFromFile(filename)) {
+        return false;
     }
+    sound.setBuffer(buffer);
+    return true;
 }
 
-void SoundManager::playSound(const std::string& name) {
-    auto it = sounds.find(name);
-    if (it != sounds.end()) {
-        sf::Sound sound;
-        sound.setBuffer(*it->second);
-        sound.play();
-    }
+void SoundManager::playSound() {
+    sound.play();
 }

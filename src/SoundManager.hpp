@@ -5,12 +5,11 @@
 
 class SoundManager {
 public:
-    SoundManager() = default;
+    bool loadSound(const std::string& filename);
 
-    void loadSound(const std::string& name, const std::string& filename);
-
-    void playSound(const std::string& name);
+    void playSound();
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<sf::SoundBuffer>> sounds;
+    sf::SoundBuffer buffer;
+    sf::Sound       sound;
 };

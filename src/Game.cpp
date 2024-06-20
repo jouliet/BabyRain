@@ -3,12 +3,14 @@
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
 Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
+	if (!soundManager.loadSound("resources/sujet_micro-projet_CSC4526_2023_2024.wav")) {
+		std::cout << "Error loading sound file" << std::endl;
+	}
 	font.loadFromFile("resources/arial.ttf");
 	timeDisplay.setFont(font);
     timeDisplay.setCharacterSize(25);
     timeDisplay.setFillColor(sf::Color::White);
     timeDisplay.setPosition(10.f, 10.f);
-	//soundManager.loadSound("baby_cry", "sujet_micro-projet_CSC4526_2023_2024.mp3");
 	contactListener = std::make_unique<ContactListener>();
 	world.SetContactListener(contactListener.get());
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
@@ -98,6 +100,7 @@ void Game::update() {
         sprite->update(movingLeft, movingRight);
 		if (sprite->destroy)
 		{
+			soundManager.playSound();
 			stopGame();
 		}
 			
@@ -125,8 +128,6 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed) {
 		movingRight = isPressed;
 	else if (key == sf::Keyboard::R)
 		restartGame();
-	//else if (key == sf::Keyboard::P)
-		//soundManager.playSound("baby_cry");
 }
 
 void Game::stopGame() {

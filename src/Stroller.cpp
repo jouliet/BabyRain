@@ -62,7 +62,6 @@ void Stroller::update(bool movingLeft, bool movingRight) {
 
 void Stroller::handleCollision(Sprite* sprite) {
     sprite->setDestroy();
-    //collisionSound.play();
 }
 
 void Stroller::setDestroy() {
