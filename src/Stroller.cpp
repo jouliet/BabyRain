@@ -16,6 +16,10 @@ Stroller::Stroller(b2World* world, float height, float width, float xPosition, f
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
     rec.setFillColor(sf::Color::Cyan);
+    if (!texture.loadFromFile("resources/stroller.png")) {
+        std::cerr << "fail texture" << std::endl;
+    }
+    rec.setTexture(&texture);
 
     auto myUserData = std::make_unique<MyFixtureUserData>();
     myUserData->type = 1;
@@ -58,6 +62,7 @@ void Stroller::update(bool movingLeft, bool movingRight) {
 
 void Stroller::handleCollision(Sprite* sprite) {
     sprite->setDestroy();
+    //collisionSound.play();
 }
 
 void Stroller::setDestroy() {

@@ -1,11 +1,12 @@
 #pragma once
 #include "Sprite.hpp"
+#include <SFML/Audio.hpp>
 
 class Stroller : public Sprite
 {
 private:
-    b2FixtureDef fixtureDef;
-    b2Vec2      force{30, 0};
+    b2FixtureDef       fixtureDef;
+    b2Vec2             force{30, 0};
     std::vector<std::unique_ptr<MyFixtureUserData>>     mFixtureUserData;
 
 public:

@@ -15,6 +15,7 @@ public:
     b2PolygonShape          box;
     sf::RectangleShape      rec;
     bool                    destroy{false};
+    sf::Texture             texture;
 
     virtual                 ~Sprite() = default;
     virtual void            draw(sf::RenderWindow& window) const = 0;

@@ -8,6 +8,7 @@
 #include "Baby.hpp"
 #include "ContactListener.hpp"
 #include "Fixtures.hpp"
+#include "SoundManager.hpp"
 
 class Game 
 {
@@ -35,6 +36,8 @@ private:
     sf::Clock               playerClock;
 
     bool                    gameRunning;
+
+    //SoundManager        soundManager;
 public:
             Game();
             ~Game();

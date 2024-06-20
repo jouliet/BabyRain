@@ -3,11 +3,12 @@
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
 Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
+	//soundManager.loadSound("baby_cry", "sujet_micro-projet_CSC4526_2023_2024.mp3");
 	contactListener = std::make_unique<ContactListener>();
 	world.SetContactListener(contactListener.get());
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-	sprites.push_back(std::make_unique<Baby>(&world, 0.5f, 0.5f));
+	sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
 }
 
 Game::~Game()
@@ -90,7 +91,7 @@ void Game::update() {
 			
     }
 	if (babySpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
-        sprites.push_back(std::make_unique<Baby>(&world, 0.5f, 0.5f));
+        sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
         babySpawnClock.restart();
     }
 }
@@ -111,6 +112,8 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed) {
 		movingRight = isPressed;
 	else if (key == sf::Keyboard::R)
 		restartGame();
+	//else if (key == sf::Keyboard::P)
+		//soundManager.playSound("baby_cry");
 }
 
 void Game::stopGame() {
