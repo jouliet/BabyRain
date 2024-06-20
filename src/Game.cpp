@@ -3,12 +3,19 @@
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
 Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
+	font.loadFromFile("resources/arial.ttf");
+	timeDisplay.setFont(font);
+    timeDisplay.setCharacterSize(25);
+    timeDisplay.setFillColor(sf::Color::White);
+    timeDisplay.setPosition(10.f, 10.f);
 	//soundManager.loadSound("baby_cry", "sujet_micro-projet_CSC4526_2023_2024.mp3");
 	contactListener = std::make_unique<ContactListener>();
 	world.SetContactListener(contactListener.get());
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
 	sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+
+	playerClock.restart();
 }
 
 Game::~Game()
@@ -74,6 +81,11 @@ void Game::processEvents() {
 }
 
 void Game::update() {
+	if (gameRunning) {
+        elapsedTime = playerClock.getElapsedTime();
+    }
+	timeDisplay.setString("Time: " + std::to_string(elapsedTime.asSeconds()));
+
 	for (int i = 0; i < sprites.size(); i++) {
         if (sprites[i]->destroy) {
 			world.DestroyBody(sprites[i]->body);
@@ -102,6 +114,7 @@ void Game::render() {
     {
         sprite->draw(window);
     }
+	window.draw(timeDisplay);
 	window.display();
 }
 
@@ -129,6 +142,8 @@ void Game::restartGame() {
 	world.SetContactListener(contactListener.get());
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-    sprites.push_back(std::make_unique<Baby>(&world, 0.5f, 0.5f));
+    sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+	playerClock.restart();
+
     gameRunning = true;
 }

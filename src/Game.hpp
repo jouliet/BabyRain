@@ -34,6 +34,9 @@ private:
     std::unique_ptr<ContactListener>                    contactListener;
     sf::Clock               babySpawnClock;
     sf::Clock               playerClock;
+    sf::Time                elapsedTime;
+    sf::Font                font;
+    sf::Text                timeDisplay;
 
     bool                    gameRunning;
 
