@@ -2,7 +2,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
-Game::Game() : world{(b2Vec2){0.0f, -10.0f}} {
+Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
 	contactListener = std::make_unique<ContactListener>();
 	world.SetContactListener(contactListener.get());
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
@@ -20,6 +20,19 @@ void Game::run() {
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	while (window.isOpen())
 	{
+		if (!gameRunning)
+		{
+			sf::Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    window.close();
+                } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
+                    restartGame();
+                }
+            }
+            continue;
+		}
+		
 		sf::Time elapsedTime = clock.restart();
 		timeSinceLastUpdate += elapsedTime;
 		while (timeSinceLastUpdate > TimePerFrame)
@@ -69,7 +82,12 @@ void Game::update() {
     }
     for (const auto& sprite : sprites)
     {
-        sprite->update(movingLeft, movingRight);	
+        sprite->update(movingLeft, movingRight);
+		if (sprite->destroy)
+		{
+			stopGame();
+		}
+			
     }
 	if (babySpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
         sprites.push_back(std::make_unique<Baby>(&world, 0.5f, 0.5f));
@@ -91,4 +109,23 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed) {
 		movingLeft = isPressed;
 	else if (key == sf::Keyboard::Right)
 		movingRight = isPressed;
+	else if (key == sf::Keyboard::R)
+		restartGame();
+}
+
+void Game::stopGame() {
+    gameRunning = false;
+}
+
+void Game::restartGame() {
+	for (const auto& sprite : sprites) {
+        world.DestroyBody(sprite->body);
+    }
+    sprites.clear();
+    contactListener = std::make_unique<ContactListener>();
+	world.SetContactListener(contactListener.get());
+    sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
+    sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
+    sprites.push_back(std::make_unique<Baby>(&world, 0.5f, 0.5f));
+    gameRunning = true;
 }

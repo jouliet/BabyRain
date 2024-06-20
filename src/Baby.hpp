@@ -4,6 +4,8 @@
 #include "Sprite.hpp"
 #include <random>
 
+class Game;
+
 class Baby : public Sprite
 {
 private:
@@ -19,5 +21,4 @@ public:
     void        update(bool movingLeft, bool movingRight) override;
     void        handleCollision(Sprite* sprite) override;
     void        setDestroy() override;
-
 };

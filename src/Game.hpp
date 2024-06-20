@@ -31,11 +31,16 @@ private:
     bool					movingLeft{false};
     
     std::unique_ptr<ContactListener>                    contactListener;
-    sf::Clock babySpawnClock;
+    sf::Clock               babySpawnClock;
+    sf::Clock               playerClock;
+
+    bool                    gameRunning;
 public:
             Game();
             ~Game();
     void    run();
 
     void    addFixtureUserData(std::unique_ptr<MyFixtureUserData> data);
+    void    stopGame();
+    void    restartGame();
 };
