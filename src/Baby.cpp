@@ -1,18 +1,26 @@
 #include "Baby.hpp"
 #include "iostream"
-#include "Fixtures.hpp"
 
 Baby::Baby(b2World* world, float height, float width) {
     //box2d
     bodyDef.type = b2_kinematicBody;
     bodyDef.fixedRotation = true;
     bodyDef.position.Set(randomPosition(), 11.f);
+    bodyDef.linearVelocity.Set(0.0f, -1.2f);
     body = world->CreateBody(&bodyDef);
+
     box.SetAsBox(width, height);
     fixtureDef.shape = &box;
     fixtureDef.density = 0.1f;
     fixtureDef.friction = 0.3f;
-    body->SetLinearVelocity(b2Vec2(0.0f, -1.2f));
+
+    fixtureUserData = std::make_unique<MyFixtureUserData>();
+    fixtureUserData->type = 1;
+    fixtureUserData->sprite = this;
+    fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(fixtureUserData.get());
+
+    body->CreateFixture(&fixtureDef);
+    
     //sfml
     rec.setSize(sf::Vector2f(2 * width * scale, 2 * height * scale));
     rec.setOrigin(rec.getSize()/2.f);
@@ -22,14 +30,6 @@ Baby::Baby(b2World* world, float height, float width) {
         std::cerr << "fail texture" << std::endl;
     }
     rec.setTexture(&texture);
-
-    auto myUserData = std::make_unique<MyFixtureUserData>();
-    myUserData->type = 1;
-    myUserData->sprite = this;
-    fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(myUserData.get());
-    body->CreateFixture(&fixtureDef);
-    mFixtureUserData.emplace_back(std::move(myUserData));
-    myUserData = nullptr;
 }
 
 float Baby::randomPosition() const {

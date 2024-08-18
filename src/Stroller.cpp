@@ -6,10 +6,18 @@ Stroller::Stroller(b2World* world, float height, float width, float xPosition, f
     bodyDef.fixedRotation = true;
     bodyDef.position.Set(xPosition, yPosition);
     body = world->CreateBody(&bodyDef);
+    
     box.SetAsBox(width, height);
     fixtureDef.shape = &box;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
+
+    fixtureUserData = std::make_unique<MyFixtureUserData>();
+    fixtureUserData->type = 1;
+    fixtureUserData->sprite = this;
+    fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(fixtureUserData.get());
+
+    body->CreateFixture(&fixtureDef);
     
     //sfml
     rec.setSize(sf::Vector2f(2 * width * scale, 2 * height * scale));
@@ -20,14 +28,6 @@ Stroller::Stroller(b2World* world, float height, float width, float xPosition, f
         std::cerr << "fail texture" << std::endl;
     }
     rec.setTexture(&texture);
-
-    auto myUserData = std::make_unique<MyFixtureUserData>();
-    myUserData->type = 1;
-    myUserData->sprite = this;
-    fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(myUserData.get());
-    body->CreateFixture(&fixtureDef);
-    mFixtureUserData.emplace_back(std::move(myUserData));
-    myUserData = nullptr;
 }
 
 void Stroller::draw(sf::RenderWindow& window) const {

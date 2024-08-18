@@ -9,8 +9,8 @@ class Game;
 class Baby : public Sprite
 {
 private:
-    b2FixtureDef fixtureDef;
-    std::vector<std::unique_ptr<MyFixtureUserData>>     mFixtureUserData;
+    b2FixtureDef                           fixtureDef;
+    std::unique_ptr<MyFixtureUserData>     fixtureUserData;
 
 public:
     Baby(b2World* world, float height, float width);

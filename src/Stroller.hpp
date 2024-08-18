@@ -5,9 +5,10 @@
 class Stroller : public Sprite
 {
 private:
-    b2FixtureDef       fixtureDef;
     b2Vec2             force{30, 0};
-    std::vector<std::unique_ptr<MyFixtureUserData>>     mFixtureUserData;
+
+    b2FixtureDef                           fixtureDef;
+    std::unique_ptr<MyFixtureUserData>     fixtureUserData;
 
 public:
     explicit    Stroller(b2World* world, float height, float width, float xPosition, float yPosition);
