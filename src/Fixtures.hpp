@@ -3,7 +3,7 @@
 
 class Sprite;
 
-struct MyFixtureUserData {
+struct SpriteData {
     int type;
     Sprite* sprite;
 };

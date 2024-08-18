@@ -1,13 +1,14 @@
 #include "StaticSprite.hpp"
 #include <iostream>
 
-StaticSprite::StaticSprite(b2World* world, float height, float width, float xPosition, float yPosition) {
+StaticSprite::StaticSprite(b2WorldId worldId, float height, float width, float xPosition, float yPosition) {
     //box2d
-    bodyDef.position.Set(xPosition, yPosition);
-    bodyDef.type = b2_staticBody;
-    body = world->CreateBody(&bodyDef);
-    box.SetAsBox(width, height);
-    body->CreateFixture(&box, 0.0f);
+    bodyDef.position = (b2Vec2){xPosition, yPosition};
+    bodyDef.userData = this;
+    bodyId = b2CreateBody(worldId, &bodyDef);
+    box = b2MakeBox(width, height);
+    shapeDef.enableContactEvents = false;
+    b2CreatePolygonShape(bodyId, &shapeDef, &box);
     //sfml
     rec.setSize(sf::Vector2f(2 * width * scale, 2 * height * scale));
     rec.setOrigin(rec.getSize()/2.f);
@@ -24,9 +25,9 @@ void StaticSprite::update(bool movingLeft, bool movingRight) {
 }
 
 void StaticSprite::handleCollision(Sprite* sprite) {
-    //TODOS
+    //ne fait rien
 }
 
 void StaticSprite::setDestroy() {
-    //ne fait rien
+    //ne peut pas être détruit
 }

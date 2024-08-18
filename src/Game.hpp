@@ -6,50 +6,51 @@
 #include "StaticSprite.hpp"
 #include "Stroller.hpp"
 #include "Baby.hpp"
-#include "ContactListener.hpp"
 #include "Fixtures.hpp"
 #include "SoundManager.hpp"
 
 class Game 
 {
 private:
-    void					processEvents();
-	void					update();
-	void					render();
+    void					                processEvents();
+    void                                    processCollisions();
+	void					                update();
+	void					                render();
 
-    void                    handleInput(sf::Keyboard::Key key, bool isPressed);
+    void                                    handleInput(sf::Keyboard::Key key, bool isPressed);
 
-    sf::RenderWindow		window{sf::VideoMode{600, 600}, "Baby Rain", sf::Style::Close};
-	static const sf::Time	TimePerFrame;
-    const float             scale = 30;
-    int32                   velocityIterations = 6;
-    int32                   positionIterations = 2;
+    sf::RenderWindow		                window{sf::VideoMode{600, 600}, "Baby Rain", sf::Style::Close};
+	static const sf::Time	                TimePerFrame;
+    const float                             scale{30};
+    const float                             timeStep{1.f/60.f};
+    const int                               subStepCount{4};
 
-    b2World                                 world;
+    b2WorldDef                              worldDef{b2DefaultWorldDef()};
+    b2WorldId                               worldId;
+
     std::vector<std::unique_ptr<Sprite>>    sprites;
 
-    bool					movingRight{false};
-    bool					movingLeft{false};
+    sf::Clock                               babySpawnClock;
+
+    bool					                movingRight{false};
+    bool					                movingLeft{false};
     
-    std::unique_ptr<ContactListener>                    contactListener;
-    sf::Clock               babySpawnClock;
-    sf::Clock               playerClock;
-    sf::Time                elapsedTime;
-    sf::Font                font;
-    sf::Text                timeDisplay;
+    SoundManager                            soundManager;
 
-    bool                    gameRunning;
+    sf::Clock                               playerClock;
+    sf::Time                                elapsedTime;
+    sf::Font                                font;
+    sf::Text                                timeDisplay;
+    sf::Texture                             backgroundTexture;
+    sf::Sprite                              backgroundSprite;
 
-    SoundManager            soundManager;
+    bool                                    gameRunning{true};
 
-    sf::Texture             backgroundTexture;
-    sf::Sprite              backgroundSprite;
 public:
             Game();
             ~Game();
     void    run();
 
-    void    addFixtureUserData(std::unique_ptr<MyFixtureUserData> data);
     void    stopGame();
     void    restartGame();
 };

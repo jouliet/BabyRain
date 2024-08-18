@@ -2,7 +2,11 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
-Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
+Game::Game() {
+	//set world
+	worldId = b2CreateWorld(&worldDef);
+
+	//set resources
 	if (!soundManager.loadSound("resources/sujet_micro-projet_CSC4526_2023_2024.wav")) {
 		std::cout << "Error loading sound file" << std::endl;
 	}
@@ -15,17 +19,17 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
     timeDisplay.setCharacterSize(25);
     timeDisplay.setFillColor(sf::Color::Black);
     timeDisplay.setPosition(10.f, 10.f);
-	contactListener = std::make_unique<ContactListener>();
-	world.SetContactListener(contactListener.get());
-    sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
-    sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-	sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+
+    sprites.push_back(std::make_unique<StaticSprite>(worldId, 2.0f, 10.0f, 0.0f, -8.0f));
+    sprites.push_back(std::make_unique<Stroller>(worldId, 1.0f, 1.0f, 0.0f, 0.0f));
+	sprites.push_back(std::make_unique<Baby>(worldId, 1.0f, 0.5f));
 
 	playerClock.restart();
 }
 
 Game::~Game()
 {
+	//b2DestroyWorld(worldId);
     sprites.clear();
 }
 
@@ -54,7 +58,8 @@ void Game::run() {
 			timeSinceLastUpdate -= TimePerFrame;
 
 			processEvents();
-            world.Step(TimePerFrame.asSeconds(), velocityIterations, positionIterations);
+            b2World_Step(worldId, timeStep, subStepCount);
+			processCollisions();
 			update();
 		}
 
@@ -86,6 +91,21 @@ void Game::processEvents() {
 	}
 }
 
+void Game::processCollisions() {
+	b2ContactEvents contactEvents = b2World_GetContactEvents(worldId);
+	for (int i = 0; i < contactEvents.beginCount; ++i)
+	{
+		std::cout << "collision happened" << std::endl;
+		b2ContactBeginTouchEvent* beginEvent = contactEvents.beginEvents + i;
+		auto spriteA = static_cast<Sprite*>(b2Body_GetUserData(b2Shape_GetBody(beginEvent->shapeIdA)));
+		auto spriteB = static_cast<Sprite*>(b2Body_GetUserData(b2Shape_GetBody(beginEvent->shapeIdB)));
+		if (spriteA && spriteB) {
+			spriteA->handleCollision(spriteB);
+			spriteB->handleCollision(spriteA);
+		}
+	}
+}
+
 void Game::update() {
 	if (gameRunning) {
         elapsedTime = playerClock.getElapsedTime();
@@ -94,7 +114,7 @@ void Game::update() {
 
 	for (int i = 0; i < sprites.size(); i++) {
         if (sprites[i]->destroy) {
-			world.DestroyBody(sprites[i]->body);
+			b2DestroyBody(sprites[i]->bodyId);
             sprites.erase(sprites.begin() + i);
 			break;
         }
@@ -109,10 +129,10 @@ void Game::update() {
 		}
 			
     }
-	if (babySpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
-        sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+	/* if (babySpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
+        sprites.push_back(std::make_unique<Baby>(worldId, 1.0f, 0.5f));
         babySpawnClock.restart();
-    }
+    } */
 }
 
 void Game::render() {
@@ -141,14 +161,12 @@ void Game::stopGame() {
 
 void Game::restartGame() {
 	for (const auto& sprite : sprites) {
-        world.DestroyBody(sprite->body);
+        b2DestroyBody(sprite->bodyId);
     }
     sprites.clear();
-    contactListener = std::make_unique<ContactListener>();
-	world.SetContactListener(contactListener.get());
-    sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
-    sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-    sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+    sprites.push_back(std::make_unique<StaticSprite>(worldId, 2.0f, 10.0f, 0.0f, -8.0f));
+    sprites.push_back(std::make_unique<Stroller>(worldId, 1.0f, 1.0f, 0.0f, 0.0f));
+    sprites.push_back(std::make_unique<Baby>(worldId, 1.0f, 0.5f));
 	playerClock.restart();
 
     gameRunning = true;

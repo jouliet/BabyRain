@@ -6,13 +6,14 @@
 #include <iostream>
 #include "Fixtures.hpp"
 
-class Sprite : public b2ContactListener
+class Sprite
 {
 public:
     float                   scale = 30;
-    b2BodyDef               bodyDef;
-    b2Body*                 body;
-    b2PolygonShape          box;
+    b2BodyDef               bodyDef{b2DefaultBodyDef()};
+    b2BodyId                bodyId;
+    b2Polygon               box;
+    b2ShapeDef              shapeDef{b2DefaultShapeDef()};
     sf::RectangleShape      rec;
     bool                    destroy{false};
     sf::Texture             texture;

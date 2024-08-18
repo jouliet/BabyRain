@@ -1,16 +1,20 @@
 #include "Stroller.hpp"
 
-Stroller::Stroller(b2World* world, float height, float width, float xPosition, float yPosition) {
+Stroller::Stroller(b2WorldId worldId, float height, float width, float xPosition, float yPosition) {
     //box2d
     bodyDef.type = b2_dynamicBody;
     bodyDef.fixedRotation = true;
-    bodyDef.position.Set(xPosition, yPosition);
-    body = world->CreateBody(&bodyDef);
-    box.SetAsBox(width, height);
-    fixtureDef.shape = &box;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
-    
+    bodyDef.position = (b2Vec2){xPosition, yPosition};
+    //data->type = 1;
+    //data->sprite = this;
+    bodyDef.userData = this;
+    bodyId = b2CreateBody(worldId, &bodyDef);
+    box = b2MakeBox(width, height);
+    shapeDef.density = 1.0f;
+    shapeDef.friction = 0.3f;
+    shapeDef.enableContactEvents = true;
+    b2CreatePolygonShape(bodyId, &shapeDef, &box);
+
     //sfml
     rec.setSize(sf::Vector2f(2 * width * scale, 2 * height * scale));
     rec.setOrigin(rec.getSize()/2.f);
@@ -20,14 +24,6 @@ Stroller::Stroller(b2World* world, float height, float width, float xPosition, f
         std::cerr << "fail texture" << std::endl;
     }
     rec.setTexture(&texture);
-
-    auto myUserData = std::make_unique<MyFixtureUserData>();
-    myUserData->type = 1;
-    myUserData->sprite = this;
-    fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(myUserData.get());
-    body->CreateFixture(&fixtureDef);
-    mFixtureUserData.emplace_back(std::move(myUserData));
-    myUserData = nullptr;
 }
 
 void Stroller::draw(sf::RenderWindow& window) const {
@@ -40,22 +36,22 @@ void Stroller::update(bool movingLeft, bool movingRight) {
     
     if (movingLeft)
     {
-        body->ApplyForceToCenter(-force, true);
+        b2Body_ApplyForceToCenter(bodyId, -force, true);
     }
     if (movingRight)
     {
-        body->ApplyForceToCenter(force, true);
+        b2Body_ApplyForceToCenter(bodyId, force, true);
     }
 
-    b2Vec2 position = body->GetPosition();
+    b2Vec2 position = b2Body_GetPosition(bodyId);
     if (position.x < left) {
-        body->SetTransform(b2Vec2(left, position.y), body->GetAngle());
-        body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+        b2Body_SetTransform(bodyId, b2Vec2{left, position.y}, b2Body_GetRotation(bodyId));
+        b2Body_SetLinearVelocity(bodyId, b2Vec2{0.0f, 0.0f});
     }
     if (position.x > right) {
-        body->SetTransform(b2Vec2(right, position.y), body->GetAngle());
-        body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-    }
+        b2Body_SetTransform(bodyId, b2Vec2{right, position.y}, b2Body_GetRotation(bodyId));
+        b2Body_SetLinearVelocity(bodyId, b2Vec2{0.0f, 0.0f});
+    } 
     
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));
 }
@@ -65,5 +61,5 @@ void Stroller::handleCollision(Sprite* sprite) {
 }
 
 void Stroller::setDestroy() {
-    destroy = true;
+    // cant be destroyed
 }
