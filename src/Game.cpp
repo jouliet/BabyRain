@@ -15,11 +15,14 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
     timeDisplay.setCharacterSize(25);
     timeDisplay.setFillColor(sf::Color::Black);
     timeDisplay.setPosition(10.f, 10.f);
+
 	contactListener = std::make_unique<ContactListener>();
 	world.SetContactListener(contactListener.get());
+
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-	sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+	//sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+	sprites.push_back(std::make_unique<Stork>(&world));
 
 	playerClock.restart();
 }
@@ -80,6 +83,10 @@ void Game::processEvents() {
 			handleInput(event.key.code, false);
 			break;
 
+		case sf::Event::MouseButtonPressed:
+			handleClick(event.mouseButton.button, event.mouseButton.x, event.mouseButton.y);
+			break;
+
 		default:
 			break;
 		}
@@ -88,17 +95,12 @@ void Game::processEvents() {
 
 void Game::update() {
 	if (gameRunning) {
-        elapsedTime = playerClock.getElapsedTime();
+        gameTime = playerClock.getElapsedTime();
     }
-	timeDisplay.setString("Time: " + std::to_string(elapsedTime.asSeconds()));
+	timeDisplay.setString("Time: " + std::to_string(gameTime.asSeconds()));
 
-	for (int i = 0; i < sprites.size(); i++) {
-        if (sprites[i]->destroy) {
-			world.DestroyBody(sprites[i]->body);
-            sprites.erase(sprites.begin() + i);
-			break;
-        }
-    }
+	cleanUp();
+
     for (const auto& sprite : sprites)
     {
         sprite->update(movingLeft, movingRight);
@@ -106,12 +108,12 @@ void Game::update() {
 		{
 			soundManager.playSound();
 			stopGame();
-		}
-			
+		}	
     }
-	if (babySpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
-        sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
-        babySpawnClock.restart();
+
+	if (storkSpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
+        sprites.push_back(std::make_unique<Stork>(&world));
+        storkSpawnClock.restart();
     }
 }
 
@@ -135,21 +137,43 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed) {
 		restartGame();
 }
 
+void Game::handleClick(sf::Mouse::Button button, int xPosition, int yPosition) {	
+	if (button == sf::Mouse::Left) {
+		for (const auto& sprite : sprites) {
+			sprite->handleClick(xPosition, yPosition);
+		}
+	}
+}
+
 void Game::stopGame() {
     gameRunning = false;
 }
 
 void Game::restartGame() {
+	//todo
 	for (const auto& sprite : sprites) {
         world.DestroyBody(sprite->body);
     }
     sprites.clear();
+
     contactListener = std::make_unique<ContactListener>();
 	world.SetContactListener(contactListener.get());
+
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
     sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+
 	playerClock.restart();
 
     gameRunning = true;
+}
+
+void Game::cleanUp() {
+	for (int i = 0; i < sprites.size(); i++) {
+        if (sprites[i]->destroy) {
+			world.DestroyBody(sprites[i]->body);
+            sprites.erase(sprites.begin() + i);
+			break;
+        }
+    }
 }

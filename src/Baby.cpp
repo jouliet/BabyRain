@@ -25,7 +25,7 @@ Baby::Baby(b2World* world, float height, float width) {
     rec.setSize(sf::Vector2f(2 * width * scale, 2 * height * scale));
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
-    rec.setFillColor(sf::Color::Magenta);
+    rec.setFillColor(sf::Color::White);
     if (!texture.loadFromFile("resources/baby.png")) {
         std::cerr << "fail texture" << std::endl;
     }

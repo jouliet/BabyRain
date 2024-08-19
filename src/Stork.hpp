@@ -1,21 +1,25 @@
 #pragma once
 #include "Sprite.hpp"
-#include <SFML/Audio.hpp>
+#include <random>
 
-class Stroller : public Sprite
+class Stork : public Sprite
 {
 private:
-    b2Vec2             force{30, 0};
+    float       halfHeight{1.f};
+    float       halfWidth{1.f};
+    float       speed{2.f}; 
 
     b2FixtureDef                           fixtureDef;
     std::unique_ptr<MyFixtureUserData>     fixtureUserData;
 
 public:
-    explicit    Stroller(b2World* world, float height, float width, float xPosition, float yPosition);
+    explicit    Stork(b2World* world);
+
+    b2Vec2      randomPosition() const;
 
     void        draw(sf::RenderWindow& window) const override;
     void        update(bool movingLeft, bool movingRight) override;
     void        handleCollision(Sprite* sprite) override;
     void        setDestroy() override;
-    void        handleClick(int xPosition, int yPosition) override {/* does nothing */};
+    void        handleClick(int xPosition, int yPosition) override;
 };

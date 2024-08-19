@@ -22,4 +22,5 @@ public:
     virtual void            update(bool movingLeft, bool movingRight) = 0;
     virtual void            handleCollision(Sprite* sprite) = 0;
     virtual void            setDestroy() = 0;
+    virtual void            handleClick(int xPosition, int yPosition) = 0;
 };
