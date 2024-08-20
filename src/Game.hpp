@@ -52,10 +52,10 @@ private:
     sf::Sprite              backgroundSprite;
 
 public:
-            Game();
-            ~Game();
-    void    run();
+                            Game();
+                            ~Game();
+    void                    run();
 
-    void    stopGame();
-    void    restartGame();
+    void                    stopGame();
+    void                    restartGame();
 };

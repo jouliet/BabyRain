@@ -9,11 +9,15 @@ class Game;
 class Baby : public Sprite
 {
 private:
+    float       halfHeight{1.0f};
+    float       halfWidth{0.5f};
+    float       speed{-1.2f};
+
     b2FixtureDef                           fixtureDef;
     std::unique_ptr<MyFixtureUserData>     fixtureUserData;
 
 public:
-    Baby(b2World* world, float height, float width);
+    Baby(b2World* world, float xPosition, float yPosition, float initialSpeed);
 
     float       randomPosition() const;
 

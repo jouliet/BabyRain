@@ -111,10 +111,10 @@ void Game::update() {
 		}	
     }
 
-	if (storkSpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
+	/* if (storkSpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
         sprites.push_back(std::make_unique<Stork>(&world));
         storkSpawnClock.restart();
-    }
+    } */
 }
 
 void Game::render() {
@@ -161,7 +161,7 @@ void Game::restartGame() {
 
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-    sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+    //sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
 
 	playerClock.restart();
 

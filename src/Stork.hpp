@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite.hpp"
+#include "Baby.hpp"
 #include <random>
 
 class Stork : public Sprite
@@ -9,8 +10,10 @@ private:
     float       halfWidth{1.f};
     float       speed{2.f}; 
 
-    b2FixtureDef                           fixtureDef;
-    std::unique_ptr<MyFixtureUserData>     fixtureUserData;
+    b2FixtureDef                            fixtureDef;
+    std::unique_ptr<MyFixtureUserData>      fixtureUserData;
+
+    std::unique_ptr<Sprite>                 child;           
 
 public:
     explicit    Stork(b2World* world);
