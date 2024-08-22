@@ -29,7 +29,6 @@ Stork::Stork(b2World* world, std::vector<std::unique_ptr<Sprite>>* sprites) {
     rec.setSize(sf::Vector2f(2 * halfWidth * scale, 2 * halfHeight * scale));
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
-    rec.setFillColor(sf::Color::White);
     if (!texture.loadFromFile("resources/stork.png")) {
         std::cerr << "fail loading texture" << std::endl;
     }

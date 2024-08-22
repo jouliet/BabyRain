@@ -51,6 +51,9 @@ private:
     sf::Texture             backgroundTexture;
     sf::Sprite              backgroundSprite;
 
+    sf::Texture             cursorTexture;
+    sf::RectangleShape      cursor;
+
 public:
                             Game();
                             ~Game();

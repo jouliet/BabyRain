@@ -5,13 +5,15 @@
 class Stroller : public Sprite
 {
 private:
-    b2Vec2             force{30, 0};
+    float               halfHeight{1.5};
+    float               halfWidth{1.5};       
+    b2Vec2              force{50, 0};
 
     b2FixtureDef                           fixtureDef;
     std::unique_ptr<MyFixtureUserData>     fixtureUserData;
 
 public:
-    explicit    Stroller(b2World* world, float height, float width, float xPosition, float yPosition);
+    explicit    Stroller(b2World* world, float xPosition, float yPosition);
 
     void        draw(sf::RenderWindow& window) const override;
     void        update(bool movingLeft, bool movingRight) override;

@@ -3,13 +3,22 @@
 const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 
 Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
+	window.setMouseCursorVisible(false);
+	if (!cursorTexture.loadFromFile("resources/target.png")) {
+		std::cout << "Error loading sound file" << std::endl;
+	}
+	cursor.setSize(sf::Vector2f(100, 100));
+	cursor.setOrigin(cursor.getSize()/2.f);
+	cursor.setTexture(&cursorTexture);
+
 	if (!soundManager.loadSound("resources/sujet_micro-projet_CSC4526_2023_2024.wav")) {
 		std::cout << "Error loading sound file" << std::endl;
 	}
 	if (!backgroundTexture.loadFromFile("resources/bg.jpg")) {
-    std::cerr << "Failed to load background image!" << std::endl;
+    	std::cout << "Failed to load background image!" << std::endl;
 	}
 	backgroundSprite.setTexture(backgroundTexture);
+
 	font.loadFromFile("resources/arial.ttf");
 	timeDisplay.setFont(font);
     timeDisplay.setCharacterSize(25);
@@ -20,8 +29,7 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
 	world.SetContactListener(contactListener.get());
 
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
-    sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-	//sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
+    sprites.push_back(std::make_unique<Stroller>(&world, 0.0f, 0.0f));
 	sprites.push_back(std::make_unique<Stork>(&world, &sprites));
 
 	playerClock.restart();
@@ -99,6 +107,8 @@ void Game::update() {
     }
 	timeDisplay.setString("Time: " + std::to_string(gameTime.asSeconds()));
 
+	cursor.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+
     for (const auto& sprite : sprites)
     {
         sprite->update(movingLeft, movingRight);
@@ -123,6 +133,7 @@ void Game::render() {
         sprite->draw(window);
     }
 	window.draw(timeDisplay);
+	window.draw(cursor);
 	window.display();
 }
 
@@ -148,7 +159,6 @@ void Game::stopGame() {
 }
 
 void Game::restartGame() {
-	//todo
 	for (const auto& sprite : sprites) {
         world.DestroyBody(sprite->body);
     }
@@ -158,7 +168,7 @@ void Game::restartGame() {
 	world.SetContactListener(contactListener.get());
 
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
-    sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
+    sprites.push_back(std::make_unique<Stroller>(&world, 0.0f, 0.0f));
 
 	playerClock.restart();
 

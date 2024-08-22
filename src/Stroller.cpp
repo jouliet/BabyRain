@@ -1,13 +1,13 @@
 #include "Stroller.hpp"
 
-Stroller::Stroller(b2World* world, float height, float width, float xPosition, float yPosition) {
+Stroller::Stroller(b2World* world, float xPosition, float yPosition) {
     //box2d
     bodyDef.type = b2_dynamicBody;
     bodyDef.fixedRotation = true;
     bodyDef.position.Set(xPosition, yPosition);
     body = world->CreateBody(&bodyDef);
     
-    box.SetAsBox(width, height);
+    box.SetAsBox(halfWidth, halfHeight);
     fixtureDef.shape = &box;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
@@ -20,10 +20,9 @@ Stroller::Stroller(b2World* world, float height, float width, float xPosition, f
     body->CreateFixture(&fixtureDef);
     
     //sfml
-    rec.setSize(sf::Vector2f(2 * width * scale, 2 * height * scale));
+    rec.setSize(sf::Vector2f(2 * halfWidth * scale, 2 * halfHeight * scale));
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
-    rec.setFillColor(sf::Color::Cyan);
     if (!texture.loadFromFile("resources/stroller.png")) {
         std::cerr << "fail texture" << std::endl;
     }
