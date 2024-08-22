@@ -22,7 +22,7 @@ private:
     void                    cleanUp();
 
     void                    handleInput(sf::Keyboard::Key key, bool isPressed);
-    void                    handleClick(sf::Mouse::Button button, int xPosition, int yPosition);
+    void                    handleClick(sf::Mouse::Button button, int xPosition, int yPosition) const;
 
     sf::RenderWindow		window{sf::VideoMode{600, 600}, "Baby Rain", sf::Style::Close};
 	static const sf::Time	TimePerFrame;

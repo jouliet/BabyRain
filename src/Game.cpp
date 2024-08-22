@@ -22,7 +22,7 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
 	//sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
-	sprites.push_back(std::make_unique<Stork>(&world));
+	sprites.push_back(std::make_unique<Stork>(&world, &sprites));
 
 	playerClock.restart();
 }
@@ -60,7 +60,7 @@ void Game::run() {
             world.Step(TimePerFrame.asSeconds(), velocityIterations, positionIterations);
 			update();
 		}
-
+		cleanUp();
 		render();
 	}
 }
@@ -99,22 +99,20 @@ void Game::update() {
     }
 	timeDisplay.setString("Time: " + std::to_string(gameTime.asSeconds()));
 
-	cleanUp();
-
     for (const auto& sprite : sprites)
     {
         sprite->update(movingLeft, movingRight);
-		if (sprite->destroy)
+		if (sprite->gameOver)
 		{
 			soundManager.playSound();
 			stopGame();
 		}	
     }
 
-	/* if (storkSpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
-        sprites.push_back(std::make_unique<Stork>(&world));
+	if (storkSpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
+        sprites.push_back(std::make_unique<Stork>(&world, &sprites));
         storkSpawnClock.restart();
-    } */
+    }
 }
 
 void Game::render() {
@@ -129,15 +127,15 @@ void Game::render() {
 }
 
 void Game::handleInput(sf::Keyboard::Key key, bool isPressed) {	
-	if (key == sf::Keyboard::Left)
+	if (key == sf::Keyboard::Q)
 		movingLeft = isPressed;
-	else if (key == sf::Keyboard::Right)
+	else if (key == sf::Keyboard::D)
 		movingRight = isPressed;
 	else if (key == sf::Keyboard::R)
 		restartGame();
 }
 
-void Game::handleClick(sf::Mouse::Button button, int xPosition, int yPosition) {	
+void Game::handleClick(sf::Mouse::Button button, int xPosition, int yPosition) const {	
 	if (button == sf::Mouse::Left) {
 		for (const auto& sprite : sprites) {
 			sprite->handleClick(xPosition, yPosition);
@@ -161,7 +159,6 @@ void Game::restartGame() {
 
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 1.0f, 1.0f, 0.0f, 0.0f));
-    //sprites.push_back(std::make_unique<Baby>(&world, 1.0f, 0.5f));
 
 	playerClock.restart();
 
@@ -173,7 +170,6 @@ void Game::cleanUp() {
         if (sprites[i]->destroy) {
 			world.DestroyBody(sprites[i]->body);
             sprites.erase(sprites.begin() + i);
-			break;
         }
     }
 }

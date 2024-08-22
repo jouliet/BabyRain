@@ -1,11 +1,10 @@
 #include "Stork.hpp"
 
-Stork::Stork(b2World* world) {
+Stork::Stork(b2World* world, std::vector<std::unique_ptr<Sprite>>* sprites) {
     //box2d
     bodyDef.type = b2_kinematicBody;
     bodyDef.fixedRotation = true;
-    //bodyDef.position.Set(randomPosition().x, randomPosition().y);
-    bodyDef.position.Set(0.f, 8);
+    bodyDef.position.Set(randomPosition().x, randomPosition().y);
     if (bodyDef.position.x <= 0)
     {
         bodyDef.linearVelocity.Set(speed, 0.0f);
@@ -36,27 +35,30 @@ Stork::Stork(b2World* world) {
     }
     rec.setTexture(&texture); */
 
-    child = std::make_unique<Baby>(world, bodyDef.position.x, bodyDef.position.y, bodyDef.linearVelocity.x);
+    //->push_back(std::make_unique<Baby>(world, bodyDef.position.x, bodyDef.position.y, bodyDef.linearVelocity.x));
+    //child = sprites->back().get();
+
+    auto baby = std::make_unique<Baby>(world, bodyDef.position.x, bodyDef.position.y, bodyDef.linearVelocity.x);
+    child = baby.get();
+    sprites->push_back(std::move(baby));
 }
 
 void Stork::draw(sf::RenderWindow& window) const {
     window.draw(rec);
-    child->draw(window);
 }
 
 void Stork::update(bool movingLeft, bool movingRight) {
     b2Vec2 position = body->GetPosition();
-    if (position.y < -10.f - halfWidth)
+    if (position.x < -10.f - halfWidth)
     {
-        destroy = true;
+        setDestroy();
     }
-    if (position.y > 10.f + halfWidth)
+    if (position.x > 10.f + halfWidth)
     {
-        destroy = true;
+        setDestroy();
     }
 
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));
-    child->update(false, false);
 }
 
 void Stork::handleCollision(Sprite* sprite) {
@@ -66,7 +68,8 @@ void Stork::handleCollision(Sprite* sprite) {
 void Stork::handleClick(int xPosition, int yPosition) {
     if (rec.getGlobalBounds().contains(static_cast<float>(xPosition), static_cast<float>(yPosition)))
     {
-        destroy = true;
+        setDestroy();
+        child->drop();
     }
 }
 

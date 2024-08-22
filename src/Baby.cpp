@@ -48,7 +48,8 @@ void Baby::update(bool movingLeft, bool movingRight) {
     b2Vec2 position = body->GetPosition();
     if (position.y < -6)
     {
-        destroy = true;
+        setDestroy();
+        gameOver = true;
     }
     
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));   
@@ -60,4 +61,8 @@ void Baby::handleCollision(Sprite* sprite) {
 
 void Baby::setDestroy() {
     destroy = true;
+}
+
+void Baby::drop() {
+    body->SetLinearVelocity((b2Vec2){0, speed});
 }
