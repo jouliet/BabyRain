@@ -29,14 +29,16 @@ Stork::Stork(b2World* world, std::vector<std::unique_ptr<Sprite>>* sprites) {
     rec.setSize(sf::Vector2f(2 * halfWidth * scale, 2 * halfHeight * scale));
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
-    rec.setFillColor(sf::Color::Magenta);
-    /* if (!texture.loadFromFile("resources/baby.png")) {
-        std::cerr << "fail texture" << std::endl;
+    rec.setFillColor(sf::Color::White);
+    if (!texture.loadFromFile("resources/stork.png")) {
+        std::cerr << "fail loading texture" << std::endl;
     }
-    rec.setTexture(&texture); */
-
-    //->push_back(std::make_unique<Baby>(world, bodyDef.position.x, bodyDef.position.y, bodyDef.linearVelocity.x));
-    //child = sprites->back().get();
+    rec.setTexture(&texture);
+    if (bodyDef.linearVelocity.x < 0)
+    {
+        rec.setScale(-1, 1);
+    }
+    
 
     auto baby = std::make_unique<Baby>(world, bodyDef.position.x, bodyDef.position.y, bodyDef.linearVelocity.x);
     child = baby.get();
@@ -52,10 +54,12 @@ void Stork::update(bool movingLeft, bool movingRight) {
     if (position.x < -10.f - halfWidth)
     {
         setDestroy();
+        child->setDestroy();
     }
     if (position.x > 10.f + halfWidth)
     {
         setDestroy();
+        child->setDestroy();
     }
 
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));
