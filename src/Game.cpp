@@ -5,7 +5,7 @@ const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
 Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
 	window.setMouseCursorVisible(false);
 	if (!cursorTexture.loadFromFile("resources/target.png")) {
-		std::cout << "Error loading sound file" << std::endl;
+		std::cout << "failed to load target" << std::endl;
 	}
 	cursor.setSize(sf::Vector2f(100, 100));
 	cursor.setOrigin(cursor.getSize()/2.f);
@@ -15,7 +15,7 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
 		std::cout << "Error loading sound file" << std::endl;
 	}
 	if (!backgroundTexture.loadFromFile("resources/bg.jpg")) {
-    	std::cout << "Failed to load background image!" << std::endl;
+    	std::cout << "Failed to load background image" << std::endl;
 	}
 	backgroundSprite.setTexture(backgroundTexture);
 
@@ -107,7 +107,7 @@ void Game::update() {
     }
 	timeDisplay.setString("Time: " + std::to_string(gameTime.asSeconds()));
 
-	cursor.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+	cursor.setPosition(static_cast<float>(sf::Mouse::getPosition(window).x), static_cast<float>(sf::Mouse::getPosition(window).y));
 
     for (const auto& sprite : sprites)
     {

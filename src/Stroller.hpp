@@ -8,9 +8,13 @@ private:
     float               halfHeight{1.5};
     float               halfWidth{1.5};       
     b2Vec2              force{50, 0};
+    int                 score{0};
 
     b2FixtureDef                           fixtureDef;
     std::unique_ptr<MyFixtureUserData>     fixtureUserData;
+
+    sf::Text            scoreDisplay;
+    sf::Font            font;
 
 public:
     explicit    Stroller(b2World* world, float xPosition, float yPosition);

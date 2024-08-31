@@ -27,13 +27,23 @@ Stroller::Stroller(b2World* world, float xPosition, float yPosition) {
         std::cerr << "fail texture" << std::endl;
     }
     rec.setTexture(&texture);
+
+    //player score
+    font.loadFromFile("resources/arial.ttf");
+    scoreDisplay.setFont(font);
+	scoreDisplay.setCharacterSize(25);
+	scoreDisplay.setFillColor(sf::Color::Red);
+	scoreDisplay.setPosition(10.f, 40.f);
 }
 
 void Stroller::draw(sf::RenderWindow& window) const {
     window.draw(rec);
+    window.draw(scoreDisplay);
 }
 
 void Stroller::update(bool movingLeft, bool movingRight) {
+    scoreDisplay.setString("Score: " + std::to_string(score));
+
     float left = -10 + rec.getSize().x/(2*scale);
     float right = 10 - rec.getSize().x/(2*scale);
     
@@ -61,6 +71,7 @@ void Stroller::update(bool movingLeft, bool movingRight) {
 
 void Stroller::handleCollision(Sprite* sprite) {
     sprite->setDestroy();
+    score += sprite->point;
 }
 
 void Stroller::setDestroy() {

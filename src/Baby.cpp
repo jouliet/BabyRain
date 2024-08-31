@@ -29,6 +29,8 @@ Baby::Baby(b2World* world, float xPosition, float yPosition, float initialSpeed)
         std::cerr << "failed to load texture" << std::endl;
     }
     rec.setTexture(&texture);
+
+    point = 1;
 }
 
 float Baby::randomPosition() const {

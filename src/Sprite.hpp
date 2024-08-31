@@ -10,6 +10,7 @@ class Sprite : public b2ContactListener
 {
 public:
     float                   scale = 30;
+    int                     point;
 
     b2BodyDef               bodyDef;
     b2Body*                 body;

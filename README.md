@@ -8,7 +8,7 @@ Binôme:
 L'objectif est d'attrapper les bébés portées par le cygognes avec la poussette avant qu'ils atteignent le sol. Attention aux cygognes piégées !!
 
 ## La poussette
-Le mouvement de la poussette est contrôlé par les flèches du clavier.
+Le mouvement de la poussette est contrôlé par les touches Q (mouvement vers la gauche) et D (mouvement vers la droite).
 
 ## Les Cygognes classiques
 Pour récupérer les bébés, il faut shooter les cygognes à l'aide de sa souris.

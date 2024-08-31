@@ -44,6 +44,7 @@ private:
     sf::Time                gameTime;
     sf::Font                font;
     sf::Text                timeDisplay;
+
     bool                    gameRunning;
 
     SoundManager            soundManager;
