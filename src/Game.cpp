@@ -11,9 +11,6 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
 	cursor.setOrigin(cursor.getSize()/2.f);
 	cursor.setTexture(&cursorTexture);
 
-	if (!soundManager.loadSound("resources/sujet_micro-projet_CSC4526_2023_2024.wav")) {
-		std::cout << "Error loading sound file" << std::endl;
-	}
 	if (!backgroundTexture.loadFromFile("resources/bg.jpg")) {
     	std::cout << "Failed to load background image" << std::endl;
 	}
@@ -112,9 +109,13 @@ void Game::update() {
     for (const auto& sprite : sprites)
     {
         sprite->update(movingLeft, movingRight);
+		if (sprite->explode)
+		{
+			soundManager.playExplosion();
+		}	
 		if (sprite->gameOver)
 		{
-			soundManager.playSound();
+			soundManager.playBaby();
 			stopGame();
 		}	
     }
@@ -146,8 +147,9 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed) {
 		restartGame();
 }
 
-void Game::handleClick(sf::Mouse::Button button, int xPosition, int yPosition) const {	
+void Game::handleClick(sf::Mouse::Button button, int xPosition, int yPosition) {	
 	if (button == sf::Mouse::Left) {
+		soundManager.playGunshot();
 		for (const auto& sprite : sprites) {
 			sprite->handleClick(xPosition, yPosition);
 		}

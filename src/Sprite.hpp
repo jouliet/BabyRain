@@ -21,6 +21,7 @@ public:
 
     bool                    destroy{false};
     bool                    gameOver{false};
+    bool                    explode{false};
 
     virtual                 ~Sprite() = default;
     virtual void            draw(sf::RenderWindow& window) const = 0;

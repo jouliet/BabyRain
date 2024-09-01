@@ -39,7 +39,7 @@ void Baby::draw(sf::RenderWindow& window) const {
 
 void Baby::update(bool movingLeft, bool movingRight) {
     b2Vec2 position = body->GetPosition();
-    if (position.y < -6)
+    if (position.y - halfHeight < -6)
     {
         setDestroy();
         gameOver = true;

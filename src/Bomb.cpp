@@ -4,7 +4,7 @@ Bomb::Bomb(b2World* world, float xPosition, float yPosition, float initialSpeed)
     //box2d
     bodyDef.type = b2_kinematicBody;
     bodyDef.fixedRotation = true;
-    bodyDef.position.Set(xPosition, yPosition - halfHeight - 0.5f);
+    bodyDef.position.Set(xPosition, yPosition - halfHeight - 0.1f);
     bodyDef.linearVelocity.Set(initialSpeed, 0);
     body = world->CreateBody(&bodyDef);
 
@@ -24,7 +24,11 @@ Bomb::Bomb(b2World* world, float xPosition, float yPosition, float initialSpeed)
     rec.setSize(sf::Vector2f(2 * halfWidth * scale, 2 * halfHeight * scale));
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
-    rec.setFillColor(sf::Color::Black);
+    if (!texture.loadFromFile("resources/bomb.png")) {
+        std::cerr << "failed to load texture" << std::endl;
+    }
+    rec.setTexture(&texture);
+    rec.setRotation(90);
 
     point = -2;
     dropPoint = randomDrop();
@@ -38,12 +42,14 @@ void Bomb::draw(sf::RenderWindow& window) const {
 void Bomb::update(bool movingLeft, bool movingRight) {
     b2Vec2 position = body->GetPosition();
 
-    if (position.y < -6) {
+    if (position.y - halfHeight < -6) {
+        explode = true;
         setDestroy();
     }
 
     if (!isDropping && dropClock.getElapsedTime().asSeconds() > dropPoint) {
         body->SetLinearVelocity((b2Vec2){0, speed});
+        rec.setRotation(0);
         isDropping = true;
     }
     

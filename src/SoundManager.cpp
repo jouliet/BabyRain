@@ -1,14 +1,29 @@
 #include "SoundManager.hpp"
 #include <iostream>
 
-bool SoundManager::loadSound(const std::string& filename) {
-    if (!buffer.loadFromFile(filename)) {
-        return false;
+SoundManager::SoundManager() {
+    if (!b_baby.loadFromFile("resources/sujet_micro-projet_CSC4526_2023_2024.wav")) {
+        std::cout << "Failed to load baby" << std::endl;
     }
-    sound.setBuffer(buffer);
-    return true;
+    baby.setBuffer(b_baby);
+    if (!b_gunshot.loadFromFile("resources/gunshot.wav")) {
+        std::cout << "Failed to load gunshot" << std::endl;
+    }
+    gunshot.setBuffer(b_gunshot);
+    if (!b_explosion.loadFromFile("resources/explosion.wav")) {
+        std::cout << "Failed to load explosion" << std::endl;
+    }
+    explosion.setBuffer(b_explosion);
 }
 
-void SoundManager::playSound() {
-    sound.play();
+void SoundManager::playBaby() {
+    baby.play();
+}
+
+void SoundManager::playGunshot() {
+    gunshot.play();
+}
+
+void SoundManager::playExplosion() {
+    explosion.play();
 }

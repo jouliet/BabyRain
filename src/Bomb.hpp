@@ -7,8 +7,8 @@
 class Bomb : public Sprite
 {
 private:
-    float       halfHeight{0.5};
-    float       halfWidth{0.5};
+    float       halfHeight{1};
+    float       halfWidth{1};
     float       speed{-2};
     float       dropPoint;
     sf::Clock   dropClock;
