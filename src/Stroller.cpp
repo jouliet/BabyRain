@@ -77,3 +77,7 @@ void Stroller::handleCollision(Sprite* sprite) {
 void Stroller::setDestroy() {
     destroy = true;
 }
+
+bool Stroller::drop() {
+    return false;
+}

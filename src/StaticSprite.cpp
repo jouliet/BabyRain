@@ -30,3 +30,7 @@ void StaticSprite::handleCollision(Sprite* sprite) {
 void StaticSprite::setDestroy() {
     //ne fait rien
 }
+
+bool StaticSprite::drop() {
+    return false;
+}

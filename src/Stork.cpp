@@ -1,6 +1,6 @@
 #include "Stork.hpp"
 
-Stork::Stork(b2World* world, std::vector<std::unique_ptr<Sprite>>* sprites) {
+Stork::Stork(b2World* world) {
     //box2d
     bodyDef.type = b2_kinematicBody;
     bodyDef.fixedRotation = true;
@@ -37,11 +37,6 @@ Stork::Stork(b2World* world, std::vector<std::unique_ptr<Sprite>>* sprites) {
     {
         rec.setScale(-1, 1);
     }
-    
-
-    auto baby = std::make_unique<Baby>(world, bodyDef.position.x, bodyDef.position.y, bodyDef.linearVelocity.x);
-    child = baby.get();
-    sprites->push_back(std::move(baby));
 }
 
 void Stork::draw(sf::RenderWindow& window) const {
@@ -53,12 +48,10 @@ void Stork::update(bool movingLeft, bool movingRight) {
     if (position.x < -10.f - halfWidth)
     {
         setDestroy();
-        child->setDestroy();
     }
     if (position.x > 10.f + halfWidth)
     {
         setDestroy();
-        child->setDestroy();
     }
 
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));
@@ -69,11 +62,7 @@ void Stork::handleCollision(Sprite* sprite) {
 }
 
 void Stork::handleClick(int xPosition, int yPosition) {
-    if (rec.getGlobalBounds().contains(static_cast<float>(xPosition), static_cast<float>(yPosition)))
-    {
-        setDestroy();
-        child->drop();
-    }
+    //default is not clickable
 }
 
 void Stork::setDestroy() {
@@ -92,4 +81,8 @@ b2Vec2 Stork::randomPosition() const {
         return b2Vec2{10 + halfWidth, static_cast<float>(y(gen))};
     }
     
+}
+
+bool Stork::drop() {
+    return false;
 }

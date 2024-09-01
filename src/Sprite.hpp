@@ -28,5 +28,5 @@ public:
     virtual void            handleCollision(Sprite* sprite) = 0;
     virtual void            setDestroy() = 0;
     virtual void            handleClick(int xPosition, int yPosition) = 0;
-    virtual void            drop() = 0;
+    virtual bool            drop() = 0;
 };

@@ -1,7 +1,6 @@
-#include "Baby.hpp"
-#include "iostream"
+#include "Bomb.hpp"
 
-Baby::Baby(b2World* world, float xPosition, float yPosition, float initialSpeed) {
+Bomb::Bomb(b2World* world, float xPosition, float yPosition, float initialSpeed) {
     //box2d
     bodyDef.type = b2_kinematicBody;
     bodyDef.fixedRotation = true;
@@ -25,46 +24,44 @@ Baby::Baby(b2World* world, float xPosition, float yPosition, float initialSpeed)
     rec.setSize(sf::Vector2f(2 * halfWidth * scale, 2 * halfHeight * scale));
     rec.setOrigin(rec.getSize()/2.f);
     rec.setPosition(300 + bodyDef.position.x * scale, 300.0f - (bodyDef.position.y * scale));
-    if (!texture.loadFromFile("resources/baby.png")) {
-        std::cerr << "failed to load texture" << std::endl;
-    }
-    rec.setTexture(&texture);
+    rec.setFillColor(sf::Color::Black);
 
-    point = 1;
+    point = -2;
+    dropPoint = randomDrop();
+    dropClock.restart();
 }
 
-void Baby::draw(sf::RenderWindow& window) const {
+void Bomb::draw(sf::RenderWindow& window) const {
     window.draw(rec);
 }
 
-void Baby::update(bool movingLeft, bool movingRight) {
+void Bomb::update(bool movingLeft, bool movingRight) {
     b2Vec2 position = body->GetPosition();
-    if (position.y < -6)
-    {
-        setDestroy();
-        gameOver = true;
-    }
-    if (position.x < -12.f - halfWidth)
-    {
+
+    if (position.y < -6) {
         setDestroy();
     }
-    if (position.x > 12.f + halfWidth)
-    {
-        setDestroy();
+
+    if (!isDropping && dropClock.getElapsedTime().asSeconds() > dropPoint) {
+        body->SetLinearVelocity((b2Vec2){0, speed});
+        isDropping = true;
     }
     
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));   
 }
 
-void Baby::handleCollision(Sprite* sprite) {
-    //
-}
-
-void Baby::setDestroy() {
+void Bomb::setDestroy() {
     destroy = true;
 }
 
-bool Baby::drop() {
-    body->SetLinearVelocity((b2Vec2){0, speed});
-    return true;
+bool Bomb::drop() {
+    return false;
+}
+
+float Bomb::randomDrop() const {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(1, 7);
+
+    return static_cast<float>(dis(gen));
 }

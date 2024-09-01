@@ -16,7 +16,7 @@ private:
     Sprite*                                 child;           
 
 public:
-    explicit    Stork(b2World* world, std::vector<std::unique_ptr<Sprite>>* sprites);
+    explicit    Stork(b2World* world);
 
     b2Vec2      randomPosition() const;
 
@@ -25,5 +25,5 @@ public:
     void        handleCollision(Sprite* sprite) override;
     void        setDestroy() override;
     void        handleClick(int xPosition, int yPosition) override;
-    void        drop() override {/*does nothing*/};
+    bool        drop() override;
 };

@@ -12,6 +12,7 @@
 #include "ContactListener.hpp"
 #include "Fixtures.hpp"
 #include "SoundManager.hpp"
+#include "Spawner.hpp"
 
 class Game 
 {
@@ -48,6 +49,7 @@ private:
     bool                    gameRunning;
 
     SoundManager            soundManager;
+    Spawner                 spawner;
 
     sf::Texture             backgroundTexture;
     sf::Sprite              backgroundSprite;

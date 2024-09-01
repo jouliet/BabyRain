@@ -30,7 +30,7 @@ Game::Game() : world{(b2Vec2){0.0f, -10.0f}}, gameRunning{true} {
 
     sprites.push_back(std::make_unique<StaticSprite>(&world, 2.0f, 10.0f, 0.0f, -8.0f));
     sprites.push_back(std::make_unique<Stroller>(&world, 0.0f, 0.0f));
-	sprites.push_back(std::make_unique<Stork>(&world, &sprites));
+	sprites.push_back(spawner.randomStork(&world, &sprites));
 
 	playerClock.restart();
 }
@@ -120,7 +120,7 @@ void Game::update() {
     }
 
 	if (storkSpawnClock.getElapsedTime().asSeconds() >= 3.5f) {
-        sprites.push_back(std::make_unique<Stork>(&world, &sprites));
+        sprites.push_back(spawner.randomStork(&world, &sprites));
         storkSpawnClock.restart();
     }
 }
