@@ -31,8 +31,6 @@ Bomb::Bomb(b2World* world, float xPosition, float yPosition, float initialSpeed)
     rec.setRotation(90);
 
     point = -2;
-    dropPoint = randomDrop();
-    dropClock.restart();
 }
 
 void Bomb::draw(sf::RenderWindow& window) const {
@@ -46,12 +44,6 @@ void Bomb::update(bool movingLeft, bool movingRight) {
         explode = true;
         setDestroy();
     }
-
-    if (!isDropping && dropClock.getElapsedTime().asSeconds() > dropPoint) {
-        body->SetLinearVelocity((b2Vec2){0, speed});
-        rec.setRotation(0);
-        isDropping = true;
-    }
     
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));   
 }
@@ -61,15 +53,9 @@ void Bomb::setDestroy() {
 }
 
 bool Bomb::drop() {
-    return false;
-}
-
-float Bomb::randomDrop() const {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(1, 7);
-
-    return static_cast<float>(dis(gen));
+    body->SetLinearVelocity((b2Vec2){0, speed});
+    rec.setRotation(0);
+    return true;
 }
 
 void Bomb::handleClick(int xPosition, int yPosition) {
