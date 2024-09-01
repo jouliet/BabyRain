@@ -71,3 +71,10 @@ float Bomb::randomDrop() const {
 
     return static_cast<float>(dis(gen));
 }
+
+void Bomb::handleClick(int xPosition, int yPosition) {
+    if (body->GetLinearVelocity().y == speed && rec.getGlobalBounds().contains(static_cast<float>(xPosition), static_cast<float>(yPosition)))
+    {
+        setDestroy();
+    }
+}

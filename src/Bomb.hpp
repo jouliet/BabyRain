@@ -26,6 +26,6 @@ public:
     void        update(bool movingLeft, bool movingRight) override;
     void        handleCollision(Sprite* sprite) override {/* does nothing*/};
     void        setDestroy() override;
-    void        handleClick(int xPosition, int yPosition) override {/* does nothing */};
+    void        handleClick(int xPosition, int yPosition) override;
     bool        drop() override;
 };
