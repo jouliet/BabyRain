@@ -72,6 +72,11 @@ void Stroller::update(bool movingLeft, bool movingRight) {
 void Stroller::handleCollision(Sprite* sprite) {
     sprite->setDestroy();
     score += sprite->point;
+    if (score <= 0)
+    {
+        gameOver = true;
+    }
+    
 }
 
 void Stroller::setDestroy() {
