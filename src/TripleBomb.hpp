@@ -16,4 +16,5 @@ public:
     
     bool drop() override;
     void handleClick(int xPosition, int yPosition) override;
+    void handleCollision(Sprite* sprite) override;
 };

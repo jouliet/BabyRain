@@ -52,3 +52,12 @@ void TripleBomb::handleClick(int xPosition, int yPosition) {
         setDestroy();
     }
 }
+
+void TripleBomb::handleCollision(Sprite* sprite) {
+    if (sprite->point == 1) {
+        explode = true;
+        setDestroy();
+        sprite->setDestroy();
+        gameOver = true;
+    }
+}

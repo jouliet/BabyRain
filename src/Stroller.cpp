@@ -29,6 +29,7 @@ Stroller::Stroller(b2World* world, float xPosition, float yPosition) {
     rec.setTexture(&texture);
 
     //player score
+    point = 0;
     font.loadFromFile("resources/arial.ttf");
     scoreDisplay.setFont(font);
 	scoreDisplay.setCharacterSize(25);
@@ -70,13 +71,16 @@ void Stroller::update(bool movingLeft, bool movingRight) {
 }
 
 void Stroller::handleCollision(Sprite* sprite) {
+    if (sprite->point < 0)
+    {
+        sprite->explode = true;
+    }
     sprite->setDestroy();
     score += sprite->point;
     if (score <= 0)
     {
         gameOver = true;
     }
-    
 }
 
 void Stroller::setDestroy() {
