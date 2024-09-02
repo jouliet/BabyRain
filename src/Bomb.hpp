@@ -3,6 +3,7 @@
 #include <Box2D/Box2D.h>
 #include "Sprite.hpp"
 #include <random>
+#include <math.h>
 
 class Bomb : public Sprite
 {

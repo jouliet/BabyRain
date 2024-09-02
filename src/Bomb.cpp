@@ -29,8 +29,9 @@ Bomb::Bomb(b2World* world, float xPosition, float yPosition, float initialSpeed)
     }
     rec.setTexture(&texture);
     rec.setRotation(90);
+    body->SetTransform(body->GetPosition(), M_PI/2);
 
-    point = -2;
+    point = -3;
 }
 
 void Bomb::draw(sf::RenderWindow& window) const {
@@ -44,6 +45,14 @@ void Bomb::update(bool movingLeft, bool movingRight) {
         explode = true;
         setDestroy();
     }
+    if (position.x < -12.f - halfWidth)
+    {
+        setDestroy();
+    }
+    if (position.x > 12.f + halfWidth)
+    {
+        setDestroy();
+    }
     
     rec.setPosition(300 + position.x * scale, 300.0f - (position.y * scale));   
 }
@@ -54,6 +63,7 @@ void Bomb::setDestroy() {
 
 bool Bomb::drop() {
     body->SetLinearVelocity((b2Vec2){0, speed});
+    body->SetTransform(body->GetPosition(), -M_PI/2);
     rec.setRotation(0);
     return true;
 }

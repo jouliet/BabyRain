@@ -5,6 +5,7 @@
 #include "Stork.hpp"
 #include "BabyStork.hpp"
 #include "BombStork.hpp"
+#include "TripleBombStork.hpp"
 #include <random>
 
 class Spawner
